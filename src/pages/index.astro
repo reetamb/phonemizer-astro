@@ -1,11 +1,68 @@
----
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
+<head>
+    <title>Phonemizer</title>
+</head>
+<body>
+    <h1>Phonemizer</h1>
+    <h2 id="consonantsTitle">Consonants</h2>     
+    <p id="uncategorizedConsonants">Uncategorized</p>
+    <div id="consonantFeatureSettings">
+    </div>
+    <br/>
+    <form>
+        <p style="display: inline">allow duplicates</p>
+        <label><input type="radio" name="duplicates" id="allowduplicateconsonants" class="forconsonants">yes</label>
+        <label><input type="radio" name="duplicates" class="forconsonants">no</label>
+    </form>
+    <form>
+        <p style="display: inline">allow complex consonants</p>
+        <label><input type="radio" name="complex" id="allowcomplexconsonants" class="forconsonants">yes</label>
+        <label><input type="radio" name="complex" class="forconsonants">no</label>
+    </form>
+    <br/>
+    <table id="consonants">
+    </table>
+    <script src="../static/consonants.js"></script>
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
----
+    <br/>
 
-<Layout>
-	<Welcome />
-</Layout>
+    <h2 id="vowelsTitle">Vowels</h2>     
+    <p id="uncategorizedVowels">Uncategorized</p>
+    <div id="vowelFeatureSettings">
+    </div>
+    <br/>
+    <form>
+        <p style="display: inline">allow duplicates</p>
+        <label><input type="radio" name="duplicates" id="allowduplicatevowels" class="forvowels">yes</label>
+        <label><input type="radio" name="duplicates" class="forvowels">no</label>
+    </form>
+    <form>
+        <p style="display: inline">allow diphthongs</p>
+        <label><input type="radio" name="complex" id="allowcomplexvowels" class="forvowels">yes</label>
+        <label><input type="radio" name="complex" class="forvowels">no</label>
+    </form>
+    <br/>
+    <table id="vowels">
+    </table>
+    <script src="../static/vowels.js"></script>
+
+	<style>
+		body {
+			background-color: black;
+			color: white;
+		}
+
+		td, th, tr {
+			border: 1px solid #ffffff;
+		}
+
+		table {
+			width: 90%;
+            border: 1px solid white;
+		}
+
+		#consonantFeatureSettings, #vowelFeatureSettings {
+			display: grid;
+			grid-template-columns: auto auto auto;
+		}
+	</style>
+</body>
