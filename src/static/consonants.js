@@ -1,4 +1,6 @@
 // INIT
+import consonantData from './parameters.json';
+
 var consonantTable = document.getElementById("consonants");
 var allowDuplicateConsonants = document.getElementById("allowduplicateconsonants");
 var allowComplexConsonants = document.getElementById("allowcomplexconsonants");
@@ -116,79 +118,74 @@ function regenerateConsonantTable() {
     var maxconsonants = 0
     var categorizedConsonants = []
     var uncategorizedConsonants = []
-    fetch('parameters.json')
-        .then(response => response.json())
-        .then((json) => {
 
+    for (let moa in moas) {
+        for (let poa in poas) {
+            cTable[parseInt(moa)+1][parseInt(poa)+1] = "";
+        }
+    }
+
+    for (let phoneme in consonantData) {
+        if (consonantData[phoneme]["segmentclass"] == "consonant") {
+            maxconsonants++;
             for (let moa in moas) {
                 for (let poa in poas) {
-                    cTable[parseInt(moa)+1][parseInt(poa)+1] = "";
-                }
-            }
-
-            for (let phoneme in json) {
-                if (json[phoneme]["segmentclass"] == "consonant") {
-                    maxconsonants++;
-                    for (let moa in moas) {
-                        for (let poa in poas) {
-                            let conditions = moas[moa] + "|" + poas[poa];
-                            if (csatisfies(json[phoneme], conditions) && (allowDuplicateConsonants.checked || !(categorizedConsonants.includes(phoneme)))) {
-                                cTable[parseInt(moa)+1][parseInt(poa)+1] += " " + phoneme.split("|")[0];
-                                categorizedConsonants.push(phoneme.toString())
-                            }
-                        }
-                    }
-                    if (categorizedConsonants.indexOf(phoneme.toString())==-1 && uncategorizedConsonants.indexOf(phoneme.toString())==-1) {
-                        uncategorizedConsonants.push(phoneme.toString())
+                    let conditions = moas[moa] + "|" + poas[poa];
+                    if (csatisfies(consonantData[phoneme], conditions) && (allowDuplicateConsonants.checked || !(categorizedConsonants.includes(phoneme)))) {
+                        cTable[parseInt(moa)+1][parseInt(poa)+1] += " " + phoneme.split("|")[0];
+                        categorizedConsonants.push(phoneme.toString())
                     }
                 }
             }
-
-            document.getElementById("consonantsTitle").innerHTML = "Consonants : " + categorizedConsonants.length + " out of " + maxconsonants;
-            document.getElementById("uncategorizedConsonants").innerHTML = "Uncategorized : " + uncategorizedConsonants.length;
-            document.getElementById("uncategorizedConsonants").title = uncategorizedConsonants.join(" ");
-
-            consonantTable.childNodes.forEach(node => {
-                node.remove();
-            });
-
-            let placesHeader = consonantTable.createTHead();
-            let placesRow = placesHeader.insertRow(0);
-            let r;
-            for (let i = 0; i < cTable.length; i++) { // rows
-                if (i != 0) {
-                    r = consonantTable.insertRow(-1); 
-                }
-                cTable[i].forEach(cell => {
-                    if (i == 0) {
-                        let c = placesRow.insertCell(-1);
-                        if (moas.includes(cell)) {
-                            c.title = cell; 
-                            cell = manners[cell]; 
-                        }
-                        else if (poas.includes(cell)) { 
-                            c.title = cell;
-                            cell = places[cell]; 
-                        }
-                        c.innerHTML = cell;
-                        c.style.border = "1px solid white"; 
-                    } else {
-                        let c = r.insertCell(-1);
-                        if (moas.includes(cell)) { 
-                            c.title = cell; 
-                            cell = manners[cell];
-                        }
-                        else if (poas.includes(cell)) { 
-                            c.title = cell;
-                            cell = places[cell]; 
-                        }
-                        c.innerHTML = cell;
-                        c.style.border = "1px solid white";
-                    }
-                })
+            if (categorizedConsonants.indexOf(phoneme.toString())==-1 && uncategorizedConsonants.indexOf(phoneme.toString())==-1) {
+                uncategorizedConsonants.push(phoneme.toString())
             }
-        });
-    ;
+        }
+    }
+
+    document.getElementById("consonantsTitle").innerHTML = "Consonants : " + categorizedConsonants.length + " out of " + maxconsonants;
+    document.getElementById("uncategorizedConsonants").innerHTML = "Uncategorized : " + uncategorizedConsonants.length;
+    document.getElementById("uncategorizedConsonants").title = uncategorizedConsonants.join(" ");
+
+    consonantTable.childNodes.forEach(node => {
+        node.remove();
+    });
+
+    let placesHeader = consonantTable.createTHead();
+    let placesRow = placesHeader.insertRow(0);
+    let r;
+    for (let i = 0; i < cTable.length; i++) { // rows
+        if (i != 0) {
+            r = consonantTable.insertRow(-1); 
+        }
+        cTable[i].forEach(cell => {
+            if (i == 0) {
+                let c = placesRow.insertCell(-1);
+                if (moas.includes(cell)) {
+                    c.title = cell; 
+                    cell = manners[cell]; 
+                }
+                else if (poas.includes(cell)) { 
+                    c.title = cell;
+                    cell = places[cell]; 
+                }
+                c.innerHTML = cell;
+                c.style.border = "1px solid white"; 
+            } else {
+                let c = r.insertCell(-1);
+                if (moas.includes(cell)) { 
+                    c.title = cell; 
+                    cell = manners[cell];
+                }
+                else if (poas.includes(cell)) { 
+                    c.title = cell;
+                    cell = places[cell]; 
+                }
+                c.innerHTML = cell;
+                c.style.border = "1px solid white";
+            }
+        })
+    }
 }
 
 // SETTINGS

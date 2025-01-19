@@ -1,4 +1,6 @@
 // INIT
+import vowelData from './parameters.json';
+
 var vowelTable = document.getElementById("vowels");
 var allowDuplicateVowels = document.getElementById("allowduplicatevowels");
 var allowComplexVowels = document.getElementById("allowcomplexvowels");
@@ -111,80 +113,74 @@ function regenerateVowelTable() {
     let maxvowels = 0
     let categorizedVowels = []
     let uncategorizedVowels = []
-    fetch('parameters.json')
-        .then(response => response.json())
-        .then((json) => {
+    for (let moa in hoas) {
+        for (let poa in foas) {
+            vTable[parseInt(moa)+1][parseInt(poa)+1] = "";
+        }
+    }
 
+    for (let phoneme in vowelData) {
+        if (vowelData[phoneme]["segmentclass"] == "vowel") {
+            maxvowels++;
             for (let moa in hoas) {
                 for (let poa in foas) {
-                    vTable[parseInt(moa)+1][parseInt(poa)+1] = "";
-                }
-            }
-
-            for (let phoneme in json) {
-                if (json[phoneme]["segmentclass"] == "vowel") {
-                    maxvowels++;
-                    for (let moa in hoas) {
-                        for (let poa in foas) {
-                            let conditions = hoas[moa] + "|" + foas[poa];
-                            if (satisfies(json[phoneme], conditions) && (allowDuplicateVowels.checked || !(categorizedVowels.includes(phoneme)))) {
-                                vTable[parseInt(moa)+1][parseInt(poa)+1] += " " + phoneme.split("|")[0];
-                                categorizedVowels.push(phoneme.toString())
-                            }
-                        }
-                    }
-                    if (categorizedVowels.indexOf(phoneme.toString())==-1 && uncategorizedVowels.indexOf(phoneme.toString())==-1) {
-                        uncategorizedVowels.push(phoneme.toString())
+                    let conditions = hoas[moa] + "|" + foas[poa];
+                    if (satisfies(vowelData[phoneme], conditions) && (allowDuplicateVowels.checked || !(categorizedVowels.includes(phoneme)))) {
+                        vTable[parseInt(moa)+1][parseInt(poa)+1] += " " + phoneme.split("|")[0];
+                        categorizedVowels.push(phoneme.toString())
                     }
                 }
             }
-
-            document.getElementById("vowelsTitle").innerHTML = "Vowels : " + categorizedVowels.length + " out of " + maxvowels;
-            document.getElementById("uncategorizedVowels").innerHTML = "Uncategorized : " + uncategorizedVowels.length;
-            document.getElementById("uncategorizedVowels").title = uncategorizedVowels.join(" ");
-            console.log(uncategorizedVowels.join(" "))
-
-            vowelTable.childNodes.forEach(node => {
-                node.remove();
-            });
-
-            let placesHeader = vowelTable.createTHead();
-            let placesRow = placesHeader.insertRow(0);
-            let r;
-            for (let i = 0; i < vTable.length; i++) { // rows
-                if (i != 0) {
-                    r = vowelTable.insertRow(-1); 
-                }
-                vTable[i].forEach(cell => {
-                    if (i == 0) {
-                        let c = placesRow.insertCell(-1);
-                        if (hoas.includes(cell)) {
-                            c.title = cell; 
-                            cell = heights[cell]; 
-                        }
-                        else if (foas.includes(cell)) { 
-                            c.title = cell;
-                            cell = frontnesses[cell]; 
-                        }
-                        c.innerHTML = cell;
-                        c.style.border = "1px solid white";
-                    } else {
-                        let c = r.insertCell(-1);
-                        if (hoas.includes(cell)) { 
-                            c.title = cell; 
-                            cell = heights[cell];
-                        }
-                        else if (foas.includes(cell)) { 
-                            c.title = cell;
-                            cell = frontnesses[cell]; 
-                        }
-                        c.innerHTML = cell;
-                        c.style.border = "1px solid white";
-                    }
-                })
+            if (categorizedVowels.indexOf(phoneme.toString())==-1 && uncategorizedVowels.indexOf(phoneme.toString())==-1) {
+                uncategorizedVowels.push(phoneme.toString())
             }
-        });
-    ;
+        }
+    }
+
+    document.getElementById("vowelsTitle").innerHTML = "Vowels : " + categorizedVowels.length + " out of " + maxvowels;
+    document.getElementById("uncategorizedVowels").innerHTML = "Uncategorized : " + uncategorizedVowels.length;
+    document.getElementById("uncategorizedVowels").title = uncategorizedVowels.join(" ");
+    console.log(uncategorizedVowels.join(" "))
+
+    vowelTable.childNodes.forEach(node => {
+        node.remove();
+    });
+
+    let placesHeader = vowelTable.createTHead();
+    let placesRow = placesHeader.insertRow(0);
+    let r;
+    for (let i = 0; i < vTable.length; i++) { // rows
+        if (i != 0) {
+            r = vowelTable.insertRow(-1); 
+        }
+        vTable[i].forEach(cell => {
+            if (i == 0) {
+                let c = placesRow.insertCell(-1);
+                if (hoas.includes(cell)) {
+                    c.title = cell; 
+                    cell = heights[cell]; 
+                }
+                else if (foas.includes(cell)) { 
+                    c.title = cell;
+                    cell = frontnesses[cell]; 
+                }
+                c.innerHTML = cell;
+                c.style.border = "1px solid white";
+            } else {
+                let c = r.insertCell(-1);
+                if (hoas.includes(cell)) { 
+                    c.title = cell; 
+                    cell = heights[cell];
+                }
+                else if (foas.includes(cell)) { 
+                    c.title = cell;
+                    cell = frontnesses[cell]; 
+                }
+                c.innerHTML = cell;
+                c.style.border = "1px solid white";
+            }
+        })
+    }
 }
 
 // SETTINGS
