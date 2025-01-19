@@ -111,7 +111,7 @@ function regenerateVowelTable() {
     let maxvowels = 0
     let categorizedVowels = []
     let uncategorizedVowels = []
-    fetch('src/static/parameters.json')
+    fetch('parameters.json')
         .then(response => response.json())
         .then((json) => {
 

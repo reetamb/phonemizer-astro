@@ -116,7 +116,7 @@ function regenerateConsonantTable() {
     var maxconsonants = 0
     var categorizedConsonants = []
     var uncategorizedConsonants = []
-    fetch('src/static/parameters.json')
+    fetch('parameters.json')
         .then(response => response.json())
         .then((json) => {
 
